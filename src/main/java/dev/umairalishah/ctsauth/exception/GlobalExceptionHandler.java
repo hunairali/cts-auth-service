@@ -20,13 +20,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailAlreadyInUseException.class)
     public ResponseEntity<ApiError> handleEmailAlreadyInUse(EmailAlreadyInUseException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ApiError.of(HttpStatus.CONFLICT, ex.getMessage()));
+                .body(ApiError.of(HttpStatus.CONFLICT.value(), HttpStatus.CONFLICT.getReasonPhrase(), ex.getMessage()));
     }
 
     @ExceptionHandler({InvalidCredentialsException.class, BadCredentialsException.class})
     public ResponseEntity<ApiError> handleInvalidCredentials(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ApiError.of(HttpStatus.UNAUTHORIZED, "Email or password is incorrect"));
+                .body(ApiError.of(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                        "Email or password is incorrect"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -35,7 +36,8 @@ public class GlobalExceptionHandler {
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiError.of(HttpStatus.BAD_REQUEST, "Validation failed", details));
+                .body(ApiError.of(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                        "Validation failed", details));
     }
 }
 
