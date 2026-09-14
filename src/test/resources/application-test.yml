@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:cts-auth-test;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+  h2:
+    console:
+      enabled: false
+
+jwt:
+  secret: test-only-secret-key-not-for-any-real-use-1234567890
+  expiration-ms: 3600000
