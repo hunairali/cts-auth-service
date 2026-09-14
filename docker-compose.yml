@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: cts_auth
+      POSTGRES_USER: cts_auth
+      POSTGRES_PASSWORD: cts_auth
+    ports:
+      - "5433:5432"
+    volumes:
+      - cts-auth-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cts_auth"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  auth-service:
+    build: .
+    ports:
+      - "8081:8081"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: cts_auth
+      DB_USER: cts_auth
+      DB_PASSWORD: cts_auth
+      JWT_SECRET: change-this-signing-key-in-every-real-deployment-0123456789
+      JWT_EXPIRATION_MS: 3600000
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  cts-auth-pgdata:
